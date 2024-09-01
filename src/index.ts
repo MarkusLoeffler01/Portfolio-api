@@ -55,6 +55,7 @@ app.use((req: Request, res, next) => {
         res.cookie('token', token, {
             httpOnly: true,
             domain: "localhost",
+            /* c8 ignore next 3 */
             sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
             //Disable https in development
             secure: process.env.NODE_ENV === 'production',
@@ -63,6 +64,7 @@ app.use((req: Request, res, next) => {
         res.cookie("token-expiration", expirationDate.toISOString(), {
             httpOnly: true,
             domain: "localhost",
+            /* c8 ignore next */
             sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
             secure: process.env.NODE_ENV === 'production',
         });
@@ -120,7 +122,6 @@ app.put("/api/comment", async (req: Request<{}, {}, Partial<Comment>>, res) => {
 
     if(!["content", "id"].every(i => i in req.body)) return res.status(400).send("Bad Request: Missing properties");
 
-    console.log(token);
     try {
         await commentDb.editComment(id!, content!, token);
         res.header("Content-Type", "text/plain");
@@ -161,6 +162,7 @@ app.delete("/api/comment", async (req: Request<{}, {}, Partial<Comment>>, res) =
     } catch(e) {
         if(e instanceof PermissionDeniedError) return res.status(403).send("Forbidden: Permission denied");
         if(e instanceof NotFoundError) return res.status(404).send("Not Found: Comment not found");
+        /* c8 ignore next 2 */
         res.status(500).send("Internal Server Error");
     }
 

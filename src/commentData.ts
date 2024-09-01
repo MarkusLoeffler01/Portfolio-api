@@ -18,8 +18,6 @@ export async function getComments(startIndex: number,  count: number) {
 export async function editComment(id: string, content: string, token: string) {
     const comment = await dbComments.getDataByValue("id", id) as Comment;
     if(!comment) throw new NotFoundError();
-    console.log(comment);
-    console.log(token);
     if(comment.uuid !== token) throw new PermissionDeniedError();
     comment.content = content;
     await dbComments.updateData({id: comment.id, content: comment.content});

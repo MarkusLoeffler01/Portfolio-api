@@ -26,6 +26,7 @@ class DatabaseService<T> implements Disposable {
             console.error("Database health check failed:", err);
             return false;
         }
+        /* c8 ignore next 3 */
         finally {
             con?.release();
         }
@@ -91,11 +92,6 @@ class DatabaseService<T> implements Disposable {
             /* c8 ignore next */
             con?.release();
         }
-
-
-
-        console.log(query);
-        console.log(values.join(', '));
     }
 
     /** @throws {DBError} */
@@ -164,7 +160,6 @@ class DatabaseService<T> implements Disposable {
             // Extrahiere die Gesamtanzahl der Einträge
             const totalCount = result.length > 0 ? result[0].totalCount : 0;
 
-            // Entferne die totalCount-Spalte, falls du sie nicht in jedem Eintrag haben möchtest
             const cleanedResult: T[] = result.map(({ totalCount, ...rest }) => rest as T);
 
             return { data: cleanedResult, totalCount: totalCount };

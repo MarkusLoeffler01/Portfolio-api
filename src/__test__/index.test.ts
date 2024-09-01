@@ -19,8 +19,6 @@ describe('Express server', () => {
     describe("GET /", () => {
         it("should return Hello World", async () => {
             const response = await supertest(app).get("/");
-            console.log(response.type);
-            console.log(response.text);
             expect(response.text).toBeDefined();
         });
     });

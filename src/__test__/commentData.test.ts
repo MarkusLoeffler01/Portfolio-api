@@ -9,27 +9,27 @@ jest.mock("../modules/envs", () => ({
 }));
 
 import * as envs from "../modules/envs";
-import { PermissionDeniedError } from "../modules/exceptions";
+import { NotFoundError, PermissionDeniedError } from "../modules/exceptions";
 
 describe('commentData', () => {
     describe('successful tests', () => { 
         beforeAll(() => {
-            queryMock.mockClear();
-            createPool.mockClear();
-            pingMock.mockClear();
+            queryMock.mockReset();
+            createPool.mockReset();
+            pingMock.mockReset();
         });
 
         afterEach(() => {
-            queryMock.mockClear();
-            createPool.mockClear();
-            pingMock.mockClear();
+            queryMock.mockReset();
+            createPool.mockReset();
+            pingMock.mockReset();
         })
 
 
         afterAll(() => {
-            queryMock.mockClear();
-            createPool.mockClear();
-            pingMock.mockClear();
+            queryMock.mockReset();
+            createPool.mockReset();
+            pingMock.mockReset();
         });
 
         it("should fetch comments with pagination", async () => {
@@ -45,11 +45,11 @@ describe('commentData', () => {
         it("should edit a comment successfully", async () => {
             const id = "1";
             const content = "Updated content";
-            const token = "valid-token";
-            const comment = { id, content, uuid: token };
+            const uuid = "valid-token";
+            const comment = { id, content, uuid };
             queryMock.mockResolvedValueOnce([comment]).mockResolvedValueOnce({ affectedRows: 1 });
 
-            const result = await commentData.editComment(id, content, token);
+            const result = await commentData.editComment(id, content, uuid);
             expect(result).toBeDefined();
             expect(result?.content).toBe(content);
             expect(queryMock).toHaveBeenCalledTimes(2);
@@ -77,8 +77,7 @@ describe('commentData', () => {
         it("Should not delete a comment if it does not exist", async () => {
             queryMock.mockResolvedValueOnce([]);
             const id = "1";
-            const result = await commentData.deleteComment(id, "valid-token");
-            expect(result).toBeNull();
+            await expect(commentData.deleteComment(id, "valid-token")).rejects.toThrow(NotFoundError);
         });
 
         it("Should not delete a comment if the token is invalid", async () => {
@@ -88,7 +87,10 @@ describe('commentData', () => {
         });
     });
 
-    describe('failing tests', () => { 
+    describe('failing tests', () => {
+        beforeEach(() => {
+            queryMock.mockReset();
+        })
         describe('Missing environment variables', () => {
             let envSpy: jest.SpyInstance;
             beforeAll(() => {
@@ -113,6 +115,13 @@ describe('commentData', () => {
         });
 
         describe('editComment with invalid token', () => {
+
+            beforeAll(() => {
+                queryMock.mockReset();
+            });
+            afterAll(() => {
+                queryMock.mockReset();
+            });
             it("should throw PermissionDeniedError if token is invalid", async () => {
                 const id = "1";
                 const content = "Updated content";
