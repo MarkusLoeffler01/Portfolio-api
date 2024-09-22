@@ -19,7 +19,17 @@ class DatabaseService<T> implements Disposable {
         try {
             con = await this.pool.getConnection();
             await con.ping();
-            con.query("CREATE TABLE IF NOT EXISTS users (userid BIGINT UNSIGNED NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY (userid))");
+            con.query(`CREATE TABLE \`comments\` (
+  \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  \`content\` varchar(1024) NOT NULL,
+  \`author\` varchar(50) NOT NULL,
+  \`createdAt\` timestamp NOT NULL DEFAULT current_timestamp(),
+  \`updatedAt\` timestamp NULL DEFAULT NULL,
+  \`deleted\` tinyint(1) NOT NULL DEFAULT 0,
+  \`uuid\` varchar(36) NOT NULL,
+  \`profilePicture\` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`);
             return true;
         }
         catch (err) {
