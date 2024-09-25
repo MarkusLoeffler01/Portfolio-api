@@ -19,7 +19,7 @@ class DatabaseService<T> implements Disposable {
         try {
             con = await this.pool.getConnection();
             await con.ping();
-            con.query(`CREATE TABLE \`comments\` (
+            con.query(`CREATE TABLE IF NOT EXISTS \`comments\` (
   \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
   \`content\` varchar(1024) NOT NULL,
   \`author\` varchar(50) NOT NULL,
