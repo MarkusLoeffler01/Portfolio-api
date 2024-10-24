@@ -6,6 +6,7 @@ type Comment = {
     updatedAt: Date;
     deleted: boolean;
     uuid: string;
+    profilePicture: string;
 }
 
 export default Comment;

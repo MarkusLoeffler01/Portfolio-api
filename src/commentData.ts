@@ -32,6 +32,6 @@ export async function deleteComment(id: string, token: string) {
     return comment;
 }
 
-export async function createComment(comment: {author: string, content: string, uuid: string}) {
+export async function createComment(comment: {author: string, content: string, uuid: string, profilePicture?: string}) {
     return await dbComments.insertData(comment);
 }

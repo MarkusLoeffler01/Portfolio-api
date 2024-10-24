@@ -135,14 +135,14 @@ app.put("/api/comment", async (req: Request<{}, {}, Partial<Comment>>, res) => {
 
 app.post("/api/comment", async (req: Request<{}, {}, Partial<Comment>>, res) => {
 
-    const { author, content } = req.body;
+    const { author, content, profilePicture } = req.body;
     const token = req.cookies.token;
 
     if(!content) return res.status(400).send("Bad Request: No comment provided");
     if(!author) return res.status(400).send("Bad Request: No comment provided");
 
     try {
-        await commentDb.createComment({ author, content, uuid: token});
+        await commentDb.createComment({ author, content, uuid: token, profilePicture});
         res.header("Content-Type", "text/plain");
         res.status(200).end("Comment created");
     } catch(e) {
